@@ -55,6 +55,7 @@ $$
 
 ### What is Positional Encoding:
 在Transformer中我们需要对Input进行如下操作： 
+
 $$
 Input = Embedding(Word) + PositionalEncoding(Position)
 $$

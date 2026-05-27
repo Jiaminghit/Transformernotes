@@ -13,16 +13,17 @@ class SelfAttentionV1(nn.Module):
         
     def forward(self, X):
         #X shape is (batch_size * seq_len * hidden_dim)
-        Q = self.query_proj(X)
-        K = self.key_proj(X)
-        V = self.value_proj(X)
+        Q = self.query_proj(X)  # 我要查询什么
+        K = self.key_proj(X)    # 我具备什么特征
+        V = self.value_proj(X)  # 我实际包含什么信息
         
-        # Q K V shape are (batch_szie * hidden_dim)
+        # Q K V shape are (batch_size * seq_len * hidden*dim)
         # K^T shape is (batch_size * hidden_dim * seq_len)
         attention_value = torch.matmul(
             Q, K.transpose(-1, -2)
         )
         # attention_weight shape is (batch_size * seq * seq)
+        # 代表了句子中每一个词与其他所有词的相关性打分。
         attention_weight = torch.softmax(
             attention_value / math.sqrt(self.hidden_dim),
             #对最后一个维度做 softmax
@@ -36,6 +37,8 @@ class SelfAttentionV1(nn.Module):
         return output
 
 # 效率优化
+# 为什么这样做？
+# GPU 喜欢计算大矩阵，一次大矩阵乘法比三次小矩阵乘法更能跑满 GPU 的算力。
 class SelfAttentionV2(nn.Module):
     def __init__(self, hidden_dim: int = 728) -> None:
         super().__init__()
@@ -95,8 +98,8 @@ class SelfAttentionFinal(nn.Module):
     def __init__(self, hidden_dim : int, dropout_rate : float = 0.1) -> None:
         super().__init__()
         self.hidden_dim = hidden_dim
-        self.query = nn.Lienar(hidden_dim, hidden_dim)
-        self.key = nn.Lienar(hidden_dim, hidden_dim)
+        self.query = nn.Linear(hidden_dim, hidden_dim)
+        self.key = nn.Linear(hidden_dim, hidden_dim)
         self.value = nn.Linear(hidden_dim, hidden_dim)
         
         self.att_dropout = nn.Dropout(dropout_rate)
