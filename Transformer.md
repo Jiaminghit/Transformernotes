@@ -60,23 +60,23 @@ Input = Embedding(Word) + PositionalEncoding(Position)
 $$
 > 为什么是相加而不是拼接（Concat）？
 > 其实拼接也可以，但相加不改变维度，省参数。而且数学上证明，在高维空间里，相加近似于把位置信息“烙印”在语义信息上，网络能学会把它们拆开。
-* 其中位置编码的公式如下：
+其中位置编码的公式如下：
   
-  $$
-  PE(pos, 2i) = \sin(\frac{pos}{10000^{\frac{2i}{d_{model}}}})
-  $$
+$$
+PE(pos, 2i) = \sin(\frac{pos}{10000^{\frac{2i}{d_{model}}}})
+$$
   
-  $$
-  PE(pos, 2i+1) = \cos(\frac{pos}{10000^{\frac{2i}{d_{model}}}})
-  $$
+$$
+PE(pos, 2i+1) = \cos(\frac{pos}{10000^{\frac{2i}{d_{model}}}})
+$$
 
 > 为什么要用三角函数？
 > Transformer 用不同频率的 sin/cos 波形组合，给每个位置生成了一个独一无二的指纹（纹理）
 > 此外由于和角公式：
-> 
-> $$
-    \sin(\alpha + \beta) = \sin\alpha \cos\beta + \cos\alpha \sin\beta
-  $$
+
+$$
+  \sin(\alpha + \beta) = \sin\alpha \cos\beta + \cos\alpha \sin\beta
+$$
 > 位置 $pos+k$ 的编码，可以被 位置 $pos$ 的编码线性表示，即网络只需要学习一个线性变换矩阵，就能轻松算出“相对位置”（比如：A 在 B 后面第 3 个位置）。
 
 ---
